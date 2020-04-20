@@ -1,6 +1,7 @@
 package processing;
 
 import processing.core.PApplet;
+import processing.tree.BinarySearchTree;
 
 public class ProcessingTest extends PApplet {
     public static void main(String... args) {
@@ -8,6 +9,8 @@ public class ProcessingTest extends PApplet {
         ProcessingTest processingTest = new ProcessingTest();
         PApplet.runSketch(processingArgs, processingTest);
     }
+
+    BinarySearchTree<Integer> binarySearchTree = new BinarySearchTree<>();
 
     Button enterButton = new Button(this);
     Button resetButton = new Button(this);
@@ -71,6 +74,7 @@ public class ProcessingTest extends PApplet {
 
     public void mousePressed() {
         textBox.pressed(mouseX, mouseY);
+
     }
 
     public void keyPressed() {
