@@ -19,7 +19,7 @@ public class TextBox extends Functions {
         disableLetters = false;
     }
 
-    private PApplet pApplet;
+    private final PApplet pApplet;
     private PVector pos;
     private String text;
     private float width;
@@ -173,7 +173,6 @@ public class TextBox extends Functions {
         if (pApplet.textWidth(this.text + text) < width) {
             this.text += text;
             textLength++;
-            System.out.println(textLength);
         }
     }
 
@@ -191,6 +190,7 @@ public class TextBox extends Functions {
 
     public void pressed(float x, float y) {
         selected = overBox(x, y);
+
         render();
     }
 

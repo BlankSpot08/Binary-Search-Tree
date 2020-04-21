@@ -6,6 +6,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     private TreeNode<T> root;
+    private int level;
 
     public void add(T data) {
         root = add(root, data);
@@ -83,6 +84,42 @@ public class BinarySearchTree<T extends Comparable<T>> {
         return i;
     }
 
+    public void levelOrder() {
+        if (root != null) {
+            int level = getLevel(root);
+
+            for (int i = 1; i <= level; i++) {
+                levelOrder(root, i);
+            }
+        }
+    }
+
+    private void levelOrder(TreeNode<T> node, int level) {
+        if (node == null) {
+            return;
+        }
+
+        if (level == 1) {
+            System.out.print(node.getData() + " ");
+        }
+
+        else if (level > 1) {
+            levelOrder(node.getLeft(), level - 1);
+            levelOrder(node.getRight(), level - 1);
+        }
+    }
+
+    private int getLevel(TreeNode<T> node) {
+        if (node == null) {
+            return 0;
+        }
+
+        int leftLevel = getLevel(node.getLeft());
+        int rightLevel = getLevel(node.getRight());
+
+        return leftLevel > rightLevel ? leftLevel + 1 : rightLevel + 1;
+    }
+
     public void inorder() {
         inorder(root);
         System.out.println();
@@ -146,9 +183,5 @@ public class BinarySearchTree<T extends Comparable<T>> {
         }
 
         else return node.getData() == data;
-    }
-
-    public void display() {
-        
     }
 }

@@ -94,7 +94,6 @@ public class Button extends Functions {
         pApplet.fill(0);
         pApplet.textAlign(pApplet.CENTER, pApplet.CENTER);
         pApplet.text(text, pos.x + (width / 2), pos.y + (height / 2));
-
     }
 
     public void setPadding(float top, float left, float bottom, float right) {

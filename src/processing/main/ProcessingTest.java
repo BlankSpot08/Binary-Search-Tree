@@ -1,4 +1,4 @@
-package processing;
+package processing.main;
 
 import processing.core.PApplet;
 import processing.graphics.Button;
@@ -7,13 +7,12 @@ import processing.tree.BinarySearchTree;
 
 public class ProcessingTest extends PApplet {
     public static void main(String... args) {
-        String[] processingArgs = {"ProcessingTest", "Button", "TextBox"};
+        String[] processingArgs = { "ProcessingTest" };
         ProcessingTest processingTest = new ProcessingTest();
         PApplet.runSketch(processingArgs, processingTest);
     }
 
     PApplet pApplet = this;
-
     BinarySearchTree<Integer> tree = new BinarySearchTree<>(pApplet);
 
     Button enterButton = new Button(pApplet) {
@@ -26,9 +25,10 @@ public class ProcessingTest extends PApplet {
                 textBox.setText("");
                 textBox.render();
 
-                System.out.println("AWIT");
+                tree.display();
             }
         }
+
     };
 
     Button resetButton = new Button(pApplet) {
@@ -37,13 +37,14 @@ public class ProcessingTest extends PApplet {
         public void setOnAction() {
             BinarySearchTree<Integer> newTree = new BinarySearchTree<>(pApplet);
 
-            background(210);
-
             tree = newTree;
             textBox.setText("");
+
+            setup();
         }
 
     };
+
     Button quitButton = new Button(pApplet) {
 
         @Override
@@ -63,6 +64,8 @@ public class ProcessingTest extends PApplet {
 
                 textBox.setText("");
                 textBox.render();
+
+                tree.display();
             }
 
         }
@@ -108,11 +111,7 @@ public class ProcessingTest extends PApplet {
         quitButton.setPadding(0, 20, 10, 0);
         quitButton.setBackgroundColor(255, 255, 255);
 
-        textBox.render();
-        enterButton.render();
-        resetButton.render();
-        quitButton.render();
-//        createTitle();
+        render();
     }
 
     public void draw() {
@@ -124,10 +123,6 @@ public class ProcessingTest extends PApplet {
 //        tree.add(5);
 //        tree.add(7);
 //        tree.add(4);
-    }
-
-    void InintLayout() {
-
     }
 
     public void mousePressed() {
@@ -152,13 +147,20 @@ public class ProcessingTest extends PApplet {
         quitButton.cursorTouched();
         textBox.cursorTouched();
 
-        createTitle();
     }
 
     public void createTitle() {
         String title = "Binary Search Tree";
         textSize(40);
-        text(title, (width / 2) - title.length() , 20);
+        text(title, width / 2 - title.length() , 20);
         textSize(14);
+    }
+
+    public void render() {
+        textBox.render();
+        enterButton.render();
+        resetButton.render();
+        quitButton.render();
+        createTitle();
     }
 }

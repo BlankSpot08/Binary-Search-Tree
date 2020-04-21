@@ -14,7 +14,7 @@ public class TreeNode<T> {
         this.left = left;
     }
 
-    protected TreeNode<T> getLeft() {
+    public TreeNode<T> getLeft() {
         return this.left;
     }
 
