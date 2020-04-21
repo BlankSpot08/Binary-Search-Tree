@@ -2,17 +2,19 @@ package processing.tree;
 
 import processing.core.PApplet;
 
-class TreeNode<T> extends PApplet {
-    public TreeNode(T data, float x, float y) {
+class TreeNode<T> {
+    public TreeNode(T data, float x, float y, PApplet pApplet) {
         this.left = null;
         this.right = null;
         this.data = data;
         this.x = x;
         this.y = y;
 
-        noFill();
-        text(String.valueOf(data), x, y);
-        ellipse(x + 15, y - 5, 30, 30);
+        pApplet.noFill();
+        pApplet.ellipse(x + 20, y - 5, 40, 40);
+
+        pApplet.textAlign(pApplet.CENTER);
+        pApplet.text(String.valueOf(data), (x + 20), y);
     }
 
     private float x;

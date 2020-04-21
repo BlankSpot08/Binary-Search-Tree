@@ -1,16 +1,16 @@
-package processing;
+package processing.graphics;
 
 import processing.core.PVector;
 import processing.core.PApplet;
 
-public class Button extends PApplet {
+public class Button extends Functions {
     public Button(PApplet pApplet)  {
-        this.text = text;
+        this.text = "";
         this.width = 10;
         this.height = 10;
-        this.backgroundColor = color(255, 255, 255);
-        this.backgroundSelected = color(150);
-        this.borderColor = color(0, 0, 0);
+        this.backgroundColor = pApplet.color(255, 255, 255);
+        this.backgroundSelected = pApplet.color(150);
+        this.borderColor = pApplet.color(0, 0, 0);
         this.pos = new PVector(0, 0);
         this.pApplet = pApplet;
     }
@@ -18,15 +18,12 @@ public class Button extends PApplet {
     private PApplet pApplet;
     private PVector pos;
     private String text;
-    private String id;
     private float width;
     private float height;
     private int backgroundColor;
     private int borderColor;
     private int backgroundSelected;
-
-    boolean pressed;
-    boolean clicked;
+    private boolean selected;
 
     public void setText(String text) {
         this.text = text;
@@ -34,14 +31,6 @@ public class Button extends PApplet {
 
     public String getText() {
         return this.text;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return this.id;
     }
 
     public void setWidth(float width) {
@@ -82,11 +71,11 @@ public class Button extends PApplet {
     }
 
     public void setBackgroundColor(int r, int g, int b) {
-        backgroundColor = color(r, g, b);
+        backgroundColor = pApplet.color(r, g, b);
     }
 
     public void setBorderColor(int r, int g, int b) {
-        borderColor = color(r, g, b);
+        borderColor = pApplet.color(r, g, b);
     }
 
     public void render() {
@@ -102,8 +91,8 @@ public class Button extends PApplet {
 
         pApplet.rect(pos.x, pos.y, width, height);
 
-        pApplet.textAlign(CENTER, CENTER);
         pApplet.fill(0);
+        pApplet.textAlign(pApplet.CENTER, pApplet.CENTER);
         pApplet.text(text, pos.x + (width / 2), pos.y + (height / 2));
 
     }
@@ -129,10 +118,19 @@ public class Button extends PApplet {
     }
 
     private void mouseOver() {
-        pApplet.cursor(HAND);
+        pApplet.cursor(pApplet.HAND);
     }
 
-    public void setOnClickedAction() {
+    private boolean overBox(float x, float y) {
+        return x >= pos.x && x <= (pos.x + this.width)
+                && y >= pos.y && y <= (pos.y + this.height);
+    }
 
-    };
+    public void pressed(float x, float y) {
+        selected = overBox(x, y);
+
+        if (selected) {
+            setOnAction();
+        }
+    }
 }
