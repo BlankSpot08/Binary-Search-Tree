@@ -5,151 +5,102 @@ import processing.core.PApplet;
 public class BinarySearchTree<T extends Comparable<T>> {
     public BinarySearchTree(PApplet pApplet) {
         this.root = null;
-        this.rootLeftHand = null;
-        this.rootRightHand = null;
         this.pApplet = pApplet;
     }
 
     private TreeNode<T> root;
-    private TreeNode<T> rootLeftHand;
-    private TreeNode<T> rootRightHand;
-
     private final PApplet pApplet;
 
-    private float leftSpace;
-    private float rightSpace;
-
     public void add(T data) {
-        root = add(root, data, pApplet.width / 2, 100);
+        root = add(root, data, (pApplet.width / 2f) - 50, 100);
+
+        display();
     }
 
     private TreeNode<T> add(TreeNode<T> node, T data, float x, float y) {
-//        if (root == null) {
-//            TreeNode<T> tempNode = new TreeNode<>(data, x, y, pApplet);
-////            tempNode.render();
-//
-//            return tempNode;
-//        }
-//
-//        if (node == null) {
-//            TreeNode<T> tempNode = new TreeNode<>(data, x, y, pApplet);
-////            tempNode.render();
-//
-//            return tempNode;
-//        }
-//
-//        if (data.compareTo(node.getData()) < 0) {
-////            rightSpace += 20;
-//
-////            createArrow(x + 20, y + 15, node.getX() - 15, node.getY() + 23);
-//            node.setLeft(add(node.getLeft(), data, node.getX() - 50, node.getY() + 40));
-//        }
-//
-//        else if (data.compareTo(node.getData()) > 0) {
-////            leftSpace += 20;
-//
-////            createArrow(x + 20, y + 15, node.getX() + 56, node.getY() + 23);
-//            node.setRight(add(node.getRight(), data, node.getX() + 50, node.getY() + 40));
-//        }
-//
-//        return node;
-
-        // EXPERIMENT TIME
-
         if (root == null) {
             return new TreeNode<>(data, x, y, pApplet);
         }
 
-        if (data.compareTo(node.getData()) < 0) {
-            if (node.getLeft() == null) {
-                node.setLeft(new TreeNode<>(data, node, node.getX() - 50, node.getY() + 40, pApplet));
+        if (!search(data)) {
+            if (data.compareTo(node.getData()) < 0) {
+                if (node.getLeft() == null) {
+                    node.setLeft(new TreeNode<>(data, pApplet), node);
+                }
 
-                if (node.getRight() != null) {
-                    node.getLeft().setSibling(node.getRight());
-                    node.getRight().setSibling(node.getLeft());
+                else {
+                    node.setLeft(add(node.getLeft(), data, x, y), node);
                 }
             }
 
-            else {
-                node.setLeft(add(node.getLeft(), data, node.getX() + 50, node.getY() + 40));
-            }
-        }
-
-        else if (data.compareTo(node.getData()) > 0) {
-            if (node.getRight() == null) {
-                node.setRight(new TreeNode<>(data, node, node.getX() + 50, node.getY() + 40, pApplet));
-
-                if (node.getLeft() != null) {
-                    node.getRight().setSibling(node.getLeft());
-                    node.getLeft().setSibling(node.getRight());
+            else if (data.compareTo(node.getData()) > 0) {
+                if (node.getRight() == null) {
+                    node.setRight(new TreeNode<>(data, pApplet), node);
                 }
-            }
 
-            else {
-                node.setRight(add(node.getRight(), data, node.getX() + 50, node.getY() + 40));
+                else {
+                    node.setRight(add(node.getRight(), data, x, y), node);
+                }
             }
         }
 
         return node;
     }
 
-//    public void delete(T data) {
-//        root = delete(root, data);
-//    }
-//
-//    private TreeNode<T> delete(TreeNode<T> node, T data) {
-//        if (node == null) {
-//            return node;
-//        }
-//
-//        if (data.compareTo(node.getData()) < 0) {
-//            node.setLeft(delete(node.getLeft(), data));
-//        }
-//
-//        else if (data.compareTo(node.getData()) > 0) {
-//            node.setRight(delete(node.getRight(), data));
-//        }
-//
-//        else {
-//            if (node.getLeft() == null && node.getRight() == null) {
-//                return null;
-//            }
-//
-//            else if (node.getLeft() != null && node.getRight() != null) {
-//                node.setData(node.getLeft().getData().compareTo(node.getRight().getData()) < 0 ? node.getLeft().getData() : node.getRight().getData());
-//
-//                node.setRight(delete(node.getRight(), node.getData()));
-//            }
-//
-//            else if (node.getLeft() == null) {
-//                return node.getRight();
-//            }
-//
-//            else if (node.getRight() == null) {
-//                return node.getLeft();
-//            }
-//        }
-//
-//        return node;
-//    }
-
     public void display() {
         pApplet.setup();
 
-        postorder(pApplet.width / 2, 100);
+        levelOrder();
     }
 
-    public void postorder(float x, float y) {
-        postorder(root, x, y);
-    }
+    public void levelOrder() {
+        if (root != null) {
+            int level = getLevel(root);
 
-    private void postorder(TreeNode<T> node, float x, float y) {
-        if (node != null) {
-            postorder(node.getLeft(), x, y);
-            postorder(node.getRight(), x, y);
-            node.createArrow();
-            node.render();
+            System.out.println();
+            for (int i = 1; i <= level; i++) {
+                levelOrder(root, i);
+            }
         }
+    }
+
+    private void levelOrder(TreeNode<T> node, int level) {
+        if (node == null) {
+            return;
+        }
+
+        System.out.println("LEVEL: " + level);
+
+        if (level == 1) {
+            node.setX(node.isLeftChildren() ?  (level * 42) * -1 : level * 42);
+            node.render();
+            System.out.println("NODE: " + node.getData());
+            System.out.println("NODE LEVEL: " + node.getLevel());
+            System.out.println("NODE WIDTH: " + node.getLevelWidth());
+            System.out.println("NODE HEIGHT: " + node.getLevelHeight());
+            System.out.println("NODE PARENT: " + (node.getParent() != null ? node.getParent().getData() : "null"));
+            System.out.println("NODE SIBLING: " + (node.getSibling() != null ? node.getSibling().getData() : null));
+            System.out.println("NODE SIBLING POSITION: " + node.isLeftChildren());
+            System.out.println("NODE LEFT: " + (node.getLeft() != null ? node.getLeft().getData() : "null"));
+            System.out.println("NODE RIGHT: " + (node.getRight() != null ? node.getRight().getData() : "null"));
+            System.out.println();
+        }
+
+        else if (level > 1) {
+            levelOrder(node.getLeft(), level - 1);
+            levelOrder(node.getRight(), level - 1);
+        }
+    }
+
+    private int getLevel(TreeNode<T> node) {
+        if (node == null) {
+            return 0;
+        }
+
+        int leftLevel = getLevel(node.getLeft());
+        int rightLevel = getLevel(node.getRight());
+
+        return leftLevel > rightLevel ? leftLevel + 1 : rightLevel + 1;
     }
 
     public void createArrow(float x1, float y1, float x2, float y2) {
@@ -167,5 +118,25 @@ public class BinarySearchTree<T extends Comparable<T>> {
 
         pApplet.popMatrix();
         pApplet.strokeWeight(1);
+    }
+
+    public boolean search(T value) {
+        return search(root, value);
+    }
+
+    private boolean search(TreeNode<T> node, T data) {
+        if (node == null) {
+            return false;
+        }
+
+        if (data.compareTo(node.getData()) < 0) {
+            return search(node.getLeft(), data);
+        }
+
+        else if (data.compareTo(node.getData()) > 0) {
+            return search(node.getRight(), data);
+        }
+
+        else return node.getData() == data;
     }
 }

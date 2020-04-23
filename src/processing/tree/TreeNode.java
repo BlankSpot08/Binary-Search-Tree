@@ -3,55 +3,51 @@ package processing.tree;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-class TreeNode<T> {
-    public TreeNode(T data, float x, float y, PApplet pApplet) {
+public class TreeNode<T> {
+    public TreeNode(T data, PApplet pApplet) {
+        this.pApplet = pApplet;
+        this.data = data;
+
+        this.pos = new PVector(pApplet.width / 2f - levelWidth / 2f, 100);
         this.left = null;
         this.right = null;
         this.parent = null;
         this.sibling = null;
-        this.data = data;
-
-        this.pos = new PVector(x, y);
-
-        this.pApplet = pApplet;
     }
 
-    public TreeNode(T data, TreeNode<T> parent, float x, float y, PApplet pApplet) {
-        this.left = null;
-        this.right = null;
-        this.sibling = null;
-        this.parent = parent;
-
-        if (this.parent.getLeft() == this) {
-            this.sibling = parent.right;
-        }
-
-        else if (this.parent.getRight() == this) {
-            this.sibling = parent.left;
-        }
-
-        this.sibling = this.parent.left == this ? parent.right : parent.left;
-
+    public TreeNode(T data, float x, float y, PApplet pApplet) {
         this.data = data;
 
         this.pos = new PVector(x, y);
 
         this.pApplet = pApplet;
+
+        isLeftChildren = false;
+        isRightChildren = false;
     }
 
     private final PApplet pApplet;
     private final float width = 40;
     private final float height = 40;
-    private PVector pos;
+    private final PVector pos;
 
-    public TreeNode<T> left;
-    public TreeNode<T> right;
-    public TreeNode<T> parent;
-    public TreeNode<T> sibling;
-    public T data;
+    private int levelHeight = 100;
+    private int levelWidth = 1;
+    private int level = 1;
+
+    private boolean isRightChildren;
+    private boolean isLeftChildren;
+
+    private TreeNode<T> left;
+    private TreeNode<T> right;
+    private TreeNode<T> parent;
+    private TreeNode<T> sibling;
+    private T data;
 
     public void setX(float x) {
-        this.pos.x = x;
+        if (this.parent != null) {
+            this.pos.x = this.parent.pos.x + x;
+        }
     }
 
     public float getX() {
@@ -59,23 +55,65 @@ class TreeNode<T> {
     }
 
     public void setY(float y) {
-        this.pos.y = y;
+        if (this.parent != null) {
+            this.pos.y = this.parent.pos.y + y;
+        }
     }
 
     public float getY() {
         return this.pos.y;
     }
 
-    public void setLeft(TreeNode<T> left) {
-        this.left = left;
+    public boolean isRightChildren() {
+        return isRightChildren;
+    }
+
+    public void setRightChildren(boolean rightChildren) {
+        isRightChildren = rightChildren;
+    }
+
+    public boolean isLeftChildren() {
+        return isLeftChildren;
+    }
+
+    public void setLeftChildren(boolean leftChildren) {
+        isLeftChildren = leftChildren;
+    }
+
+    public void setLeft(TreeNode<T> left, TreeNode<T> node) {
+        if (this.left == null) {
+            this.left = left;
+
+            this.left.parent = node;
+            this.left.level = this.left.parent.level + 1;
+
+            this.left.sibling = node.right;
+
+            this.left.pos.x = node.pos.x - 42;
+            this.left.pos.y = node.pos.y + 50;
+
+            this.left.setLeftChildren(true);
+        }
     }
 
     public TreeNode<T> getLeft() {
         return this.left;
     }
 
-    public void setRight(TreeNode<T> right) {
-        this.right = right;
+    public void setRight(TreeNode<T> right, TreeNode<T> node) {
+        if (this.right == null) {
+            this.right = right;
+
+            this.right.parent = node;
+            this.right.level = this.right.parent.level + 1;
+
+            this.right.sibling = node.left;
+
+            this.right.pos.x = node.pos.x + 42;
+            this.right.pos.y = node.pos.y + 50;
+
+            this.right.setRightChildren(true);
+        }
     }
 
     public TreeNode<T> getRight() {
@@ -106,12 +144,38 @@ class TreeNode<T> {
         return this.data;
     }
 
+    public int getLevelHeight() {
+        return levelHeight + ((getLevel() - 1) * 62);
+    }
+
+    public void setLevelHeight(int levelHeight) {
+        this.levelHeight = levelHeight;
+    }
+
+    public int getLevelWidth() {
+        return ((((int) Math.pow(2, getLevel() - 1) - 1) * 2) + 1) * 42;
+    }
+
+    public void setLevelWidth(int levelWidth) {
+        this.levelWidth = levelWidth;
+    }
+
+    public void setLevel(int level) {
+        if (this.parent != null) {
+            this.level = parent.level + 1;
+        }
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
     public void render() {
         pApplet.noFill();
-        pApplet.ellipse(pos.x + 20, pos.y - 5, width, height);
+        pApplet.ellipse(pos.x, pos.y, width, height);
 
         pApplet.textAlign(pApplet.CENTER);
-        pApplet.text(String.valueOf(data), pos.x + 20, pos.y);
+        pApplet.text(String.valueOf(data), pos.x, pos.y + 5);
     }
 
     public void createArrow() {

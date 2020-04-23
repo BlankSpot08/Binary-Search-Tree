@@ -23,9 +23,7 @@ public class ProcessingTest extends PApplet {
                 tree.add(Integer.valueOf(textBox.getText()));
 
                 textBox.setText("");
-                textBox.render();
-
-                tree.display();
+                System.out.println("AIGHT");
             }
         }
 
@@ -64,10 +62,7 @@ public class ProcessingTest extends PApplet {
 
                 textBox.setText("");
                 textBox.render();
-
-                tree.display();
             }
-
         }
     };
 
@@ -115,14 +110,7 @@ public class ProcessingTest extends PApplet {
     }
 
     public void draw() {
-//        tree.add(2);
-//        tree.add(3);
-//        tree.add(1);
-//        tree.add(6);
-//        tree.add(10);
-//        tree.add(5);
-//        tree.add(7);
-//        tree.add(4);
+
     }
 
     public void mousePressed() {
