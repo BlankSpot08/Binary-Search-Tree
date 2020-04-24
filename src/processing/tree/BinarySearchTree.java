@@ -28,7 +28,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
                     node.setLeft(new TreeNode<>(data, pApplet), node, root);
 
                     if (node.getLeft().isDescendantOf(root.getRight())) {
-                        node.moveLeftSiblings(node.getParent(), node.getLeft());
+                        node.moveRightLeftSiblings(node.getParent(), node.getLeft());
                     }
                 }
 
@@ -40,6 +40,14 @@ public class BinarySearchTree<T extends Comparable<T>> {
             else if (data.compareTo(node.getData()) > 0) {
                 if (node.getRight() == null) {
                     node.setRight(new TreeNode<>(data, pApplet), node);
+
+                    if (node.getRight().isDescendantOf(root.getRight()) && node.getRight() != root.getRight()) {
+                        node.moveRightRightSiblings(node.getParent(), node.getRight());
+                    }
+
+                    else if (node.getRight().isDescendantOf(root.getLeft())) {
+                        node.moveLeftRightSiblings(node.getParent(), node.getRight());
+                    }
                 }
 
                 else {

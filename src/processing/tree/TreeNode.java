@@ -3,7 +3,7 @@ package processing.tree;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class TreeNode<T> {
+public class TreeNode<T extends Comparable<T>> {
     public TreeNode(T data, PApplet pApplet) {
         this.pApplet = pApplet;
         this.data = data;
@@ -126,30 +126,93 @@ public class TreeNode<T> {
         return false;
     }
 
-    public void moveLeftSiblings(TreeNode<T> node, TreeNode<T> main) {
-        move(node, main);
+    public void moveLeftRightSiblings(TreeNode<T> node, TreeNode<T> main) {
+        moveLeftRight(node, main);
     }
 
-    public void move(TreeNode<T> node, TreeNode<T> main) {
-        traverse(node, node, main);
+    private void moveLeftRight(TreeNode<T> node, TreeNode<T> main) {
+        System.out.println("CURRENT DATA: " + node.data);
+        traverseLeftRight(node, node, main);
+        System.out.println();
 
         if (node.parent != null) {
-            move(node.getParent(), main);
+            moveLeftRight(node.parent, main);
         }
     }
 
-    private void traverse(TreeNode<T> node, TreeNode<T> currentNode, TreeNode<T> main) {
+    private void traverseLeftRight(TreeNode<T> node, TreeNode<T> currentNode, TreeNode<T> main) {
         if (node != null) {
-            if (node.getLeft() != null && !node.getLeft().isAncestorOf(main)) {
-                traverse(node.getLeft(), currentNode, main);
+            if (node.right != null && !node.right.isAncestorOf(main)) {
+                traverseLeftRight(node.right, currentNode, main);
             }
 
             if (node != currentNode) {
-                node.setX(node.getX() - 42);
+                node.pos.x = node.pos.x + 22;
             }
 
-            if (node.getRight() != null && node.getSibling() != null && !node.getRight().isAncestorOf(main) && node.getRight() != node.getSibling()) {
-                traverse(node.getRight(), currentNode, main);
+            if (node.left != null && !node.left.isAncestorOf(main) && node.left.data.compareTo(main.data) > 0) {
+                traverseLeftRight(node.left, currentNode, main  );
+            }
+        }
+    }
+
+    public void moveRightRightSiblings(TreeNode<T> node, TreeNode<T> main) {
+        moveRightRight(node, main);
+    }
+
+    private void moveRightRight(TreeNode<T> node, TreeNode<T> main) {
+        System.out.println("CURRENT NODE: " + node.data);
+        traverseRightRight(node, node, main);
+        System.out.println();
+
+        if (node.parent != null) {
+            moveRightRight(node.parent, main);
+        }
+    }
+
+    private void traverseRightRight(TreeNode<T> node, TreeNode<T> currentNode, TreeNode<T> main) {
+        if (node != null) {
+            if (node.right != null && !node.right.isAncestorOf(main)) {
+                traverseRightRight(node.right, currentNode, main);
+            }
+
+            if (node != currentNode) {
+                node.pos.x = node.pos.x + 22;
+            }
+
+            if (node.left != null && !node.left.isAncestorOf(main) && node.left.data.compareTo(main.data) > 0) {
+                traverseRightRight(node.left, currentNode, main);
+            }
+        }
+    }
+
+    public void moveRightLeftSiblings(TreeNode<T> node, TreeNode<T> main) {
+        moveRightLeft(node, main);
+    }
+
+    private void moveRightLeft(TreeNode<T> node, TreeNode<T> main) {
+        System.out.println("CURRENT NODE: " + node.data);
+
+        traverseRightLeft(node, node, main);
+
+        System.out.println();
+        if (node.parent != null) {
+            moveRightLeft(node.parent, main);
+        }
+    }
+
+    private void traverseRightLeft(TreeNode<T> node, TreeNode<T> currentNode, TreeNode<T> main) {
+        if (node != null) {
+            if (node.getLeft() != null && !node.getLeft().isAncestorOf(main)) {
+                traverseRightLeft(node.getLeft(), currentNode, main);
+            }
+
+            if (node != currentNode) {
+                node.setX(node.getX() - 22);
+            }
+
+            if (node.getRight() != null && !node.getRight().isAncestorOf(main) && !node.right.parent.isAncestorOf(main)) {
+                traverseRightLeft(node.getRight(), currentNode, main);
             }
         }
     }
