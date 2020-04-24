@@ -1,0 +1,3 @@
+# Tree
+
+Binary Seach Tree | 
