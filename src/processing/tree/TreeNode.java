@@ -27,8 +27,8 @@ public class TreeNode<T> {
     }
 
     private final PApplet pApplet;
-    private final float width = 40;
-    private final float height = 40;
+    private final float width = 32;
+    private final float height = 32;
     private final PVector pos;
 
     private int levelHeight = 100;
@@ -45,9 +45,7 @@ public class TreeNode<T> {
     private T data;
 
     public void setX(float x) {
-        if (this.parent != null) {
-            this.pos.x = this.parent.pos.x + x;
-        }
+        this.pos.x = x;
     }
 
     public float getX() {
@@ -80,7 +78,7 @@ public class TreeNode<T> {
         isLeftChildren = leftChildren;
     }
 
-    public void setLeft(TreeNode<T> left, TreeNode<T> node) {
+    public void setLeft(TreeNode<T> left, TreeNode<T> node, TreeNode<T> root) {
         if (this.left == null) {
             this.left = left;
 
@@ -93,6 +91,66 @@ public class TreeNode<T> {
             this.left.pos.y = node.pos.y + 50;
 
             this.left.setLeftChildren(true);
+        }
+    }
+
+    public boolean isAncestorOf(TreeNode<T> node) {
+        return isAncestorOf(node, this);
+    }
+
+    private boolean isAncestorOf(TreeNode<T> node, TreeNode<T> ancestor) {
+        if (node.parent != null) {
+            if (node == ancestor) {
+                return true;
+            }
+
+            return isAncestorOf(node.parent, this);
+        }
+
+        return false;
+    }
+
+    public boolean isDescendantOf(TreeNode<T> ancestor) {
+        return isDescendantOf(this, ancestor);
+    }
+
+    private boolean isDescendantOf(TreeNode<T> descendant, TreeNode<T> ancestor) {
+        if (descendant.parent != null) {
+            if (descendant == ancestor) {
+                return true;
+            }
+
+            return isDescendantOf(descendant.parent, ancestor);
+        }
+
+        return false;
+    }
+
+    public void moveLeftSiblings(TreeNode<T> node, TreeNode<T> main) {
+        move(node, main);
+    }
+
+    public void move(TreeNode<T> node, TreeNode<T> main) {
+        traverse(node, node, main);
+
+        if (node.parent != null) {
+            move(node.getParent(), main);
+        }
+    }
+
+    private void traverse(TreeNode<T> node, TreeNode<T> currentNode, TreeNode<T> main) {
+        if (node != null) {
+            if (node.getLeft() != null && !node.getLeft().isAncestorOf(main)) {
+                traverse(node.getLeft(), currentNode, main);
+            }
+
+            if (node != currentNode) {
+                node.setX(node.getX() - 42);
+            }
+
+            if (node.getRight() != null && node.getSibling() != null && !node.getRight().isAncestorOf(main) && node.getRight() != node.getSibling()) {
+                traverse(node.getRight(), currentNode, main);
+            }
         }
     }
 
@@ -171,21 +229,24 @@ public class TreeNode<T> {
     }
 
     public void render() {
+        createArrow();
         pApplet.noFill();
         pApplet.ellipse(pos.x, pos.y, width, height);
 
         pApplet.textAlign(pApplet.CENTER);
+        pApplet.textSize(12);
         pApplet.text(String.valueOf(data), pos.x, pos.y + 5);
+        pApplet.textSize(14);
     }
 
     public void createArrow() {
-        if (this.parent != null) {
-            if (this.getParent().getRight() == this) {
-                createArrow(this.getParent().getX() + 20, this.getParent().getY() + 15, pos.x + 4, pos.y - 17);
+        if (parent != null) {
+            if (isRightChildren) {
+                createArrow(getParent().getX(), getParent().getY() + 15, pos.x - 15 , pos.y - 15);
             }
 
-            else if (this.getParent().getLeft() == this) {
-                createArrow(this.getParent().getX() + 20, this.getParent().getY() + 15, pos.x + width - 3, pos.y - 17);
+            else if (isLeftChildren) {
+                createArrow(getParent().getX(), getParent().getY() + 15, pos.x + 15, pos.y - 15);
             }
         }
     }

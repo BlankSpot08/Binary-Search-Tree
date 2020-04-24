@@ -64,6 +64,7 @@ public class ProcessingTest extends PApplet {
                 textBox.render();
             }
         }
+
     };
 
     public void settings() {

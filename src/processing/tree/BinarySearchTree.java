@@ -25,11 +25,15 @@ public class BinarySearchTree<T extends Comparable<T>> {
         if (!search(data)) {
             if (data.compareTo(node.getData()) < 0) {
                 if (node.getLeft() == null) {
-                    node.setLeft(new TreeNode<>(data, pApplet), node);
+                    node.setLeft(new TreeNode<>(data, pApplet), node, root);
+
+                    if (node.getLeft().isDescendantOf(root.getRight())) {
+                        node.moveLeftSiblings(node.getParent(), node.getLeft());
+                    }
                 }
 
                 else {
-                    node.setLeft(add(node.getLeft(), data, x, y), node);
+                    node.setLeft(add(node.getLeft(), data, x, y), node, root);
                 }
             }
 
@@ -69,21 +73,21 @@ public class BinarySearchTree<T extends Comparable<T>> {
             return;
         }
 
-        System.out.println("LEVEL: " + level);
+//        System.out.println("LEVEL: " + level);
 
         if (level == 1) {
-            node.setX(node.isLeftChildren() ?  (level * 42) * -1 : level * 42);
+//            node.setX(node.isLeftChildren() ?  ((getLevel(root) - level) * 26) * -1 : (getLevel(root) - level) * 26);
             node.render();
-            System.out.println("NODE: " + node.getData());
-            System.out.println("NODE LEVEL: " + node.getLevel());
-            System.out.println("NODE WIDTH: " + node.getLevelWidth());
-            System.out.println("NODE HEIGHT: " + node.getLevelHeight());
-            System.out.println("NODE PARENT: " + (node.getParent() != null ? node.getParent().getData() : "null"));
-            System.out.println("NODE SIBLING: " + (node.getSibling() != null ? node.getSibling().getData() : null));
-            System.out.println("NODE SIBLING POSITION: " + node.isLeftChildren());
-            System.out.println("NODE LEFT: " + (node.getLeft() != null ? node.getLeft().getData() : "null"));
-            System.out.println("NODE RIGHT: " + (node.getRight() != null ? node.getRight().getData() : "null"));
-            System.out.println();
+//            System.out.println("NODE: " + node.getData());
+//            System.out.println("NODE LEVEL: " + node.getLevel());
+//            System.out.println("NODE WIDTH: " + node.getLevelWidth());
+//            System.out.println("NODE HEIGHT: " + node.getLevelHeight());
+//            System.out.println("NODE PARENT: " + (node.getParent() != null ? node.getParent().getData() : "null"));
+//            System.out.println("NODE SIBLING: " + (node.getSibling() != null ? node.getSibling().getData() : null));
+//            System.out.println("NODE SIBLING POSITION: " + node.isLeftChildren());
+//            System.out.println("NODE LEFT: " + (node.getLeft() != null ? node.getLeft().getData() : "null"));
+//            System.out.println("NODE RIGHT: " + (node.getRight() != null ? node.getRight().getData() : "null"));
+//            System.out.println();
         }
 
         else if (level > 1) {
