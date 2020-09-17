@@ -1,6 +1,6 @@
 # Tree
 
-Binary Seach Tree | 
+Binary Seach Tree
 
 Binary Search Tree - Visualization
 
